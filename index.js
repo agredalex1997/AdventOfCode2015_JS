@@ -7,6 +7,7 @@ function processInstructions() {
 
     context.fillStyle = "black";
     context.fillRect(0, 0, 1000, 1000);
+    // context.globalCompositeOperation = "overlay";
 
     reader.addEventListener("load", async () => {
         for (const instruction of reader.result.split("\n")) {
@@ -23,15 +24,19 @@ function processInstructions() {
             const [ulx, uly] = parseCorner(words[words.length - 3]);
             const [lrx, lry] = parseCorner(words[words.length - 1]);
 
-            if (command == "turn on" || command == "turn off") {
-                context.fillStyle = command == "turn on" ? "white" : "black";
-                context.fillRect(parseInt(ulx), parseInt(uly), parseInt(lrx) - parseInt(ulx) + 1, parseInt(lry) - parseInt(uly) + 1)
-            } else {
-                context.globalCompositeOperation = "difference";
-                context.fillStyle = "white";
-                context.fillRect(parseInt(ulx), parseInt(uly), parseInt(lrx) - parseInt(ulx) + 1, parseInt(lry) - parseInt(uly) + 1)
-                context.globalCompositeOperation = "source-over";
+            switch (command) {
+                case "turn on":
+                    context.fillStyle = "rgba(255,255,255,0.1)";
+                    break;
+                case "turn off":
+                    context.fillStyle = "rgba(255,255,255,0.2)";
+                    break;
+                case "toggle":
+                    context.fillStyle = "rgba(0,0,0,0.1)";
+                    break;
             }
+
+            context.fillRect(parseInt(ulx), parseInt(uly), parseInt(lrx) - parseInt(ulx) + 1, parseInt(lry) - parseInt(uly) + 1)
 
             await delay(100);
         }
